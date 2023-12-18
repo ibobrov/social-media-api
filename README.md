@@ -1,3 +1,5 @@
+[![Java CI with Gradle](https://github.com/ibobrov/social-media-api/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/ibobrov/social-media-api/actions/workflows/gradle.yml)
+
 # Social Media API Project Description
 
 Develop a RESTful API for a social media platform that allows users to register, log in, create posts, communicate with each other, subscribe to other users, and receive their activity feed.
