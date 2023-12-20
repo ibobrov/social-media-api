@@ -10,10 +10,10 @@ import org.testcontainers.utility.DockerImageName
 
 @TestConfiguration(proxyBeanMethods = false)
 class TestSocialApplication {
-
     @Bean
     @ServiceConnection
-    fun postgresContainer(): PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
+    fun postgresContainer(): PostgreSQLContainer<*> =
+        PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
 }
 
 fun main(args: Array<String>) {
