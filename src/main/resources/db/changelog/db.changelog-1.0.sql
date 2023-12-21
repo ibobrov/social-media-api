@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS posts (
   title VARCHAR NOT NULL,
   text VARCHAR NOT NULL,
   image_url VARCHAR,
-  create_time TIMESTAMP
+  create_time TIMESTAMP NOT NULL DEFAULT now(),
+  author_user_id INT NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS subscribers (
