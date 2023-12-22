@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    contexts: ${spring.profiles.active:}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5435/db-sm
