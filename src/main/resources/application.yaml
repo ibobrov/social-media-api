@@ -1,8 +1,14 @@
 spring:
   liquibase:
     contexts: ${spring.profiles.active:}
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5435/db-sm
     username: user
     password: password
+
+jwt:
+  key: fsdfsdfsdfsdfsdfsdfsddasdasdasdasdasdasdas
+  access-token-expiration: 3600000
+  refresh-token-expiration: 86400000

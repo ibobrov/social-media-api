@@ -1,12 +1,9 @@
 package i.bobrov.social.repository
 
-import org.springframework.stereotype.Repository
-
 interface CrudRepository<T> : BaseRepository<T> {
     fun findAll(): List<T>
 }
 
-@Repository
 interface BaseRepository<T> {
     fun add(elm: T): Int
 

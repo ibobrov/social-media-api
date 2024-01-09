@@ -1,8 +1,15 @@
 package i.bobrov.social.model
 
+import java.util.UUID
+
 data class User(
-    val id: Int,
-    val name: String,
+    val id: UUID,
     val email: String,
     val password: String,
+    val role: Role,
 )
+
+enum class Role {
+    USER,
+    ADMIN,
+}
