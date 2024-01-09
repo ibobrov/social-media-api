@@ -5,6 +5,9 @@ import i.bobrov.social.dto.UserResponse
 import i.bobrov.social.model.Role
 import i.bobrov.social.model.User
 import i.bobrov.social.service.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -19,10 +22,15 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(
+    name = "Пользователи",
+    description = "Методы для работы с пользователями системы",
+)
 class UserController(
     private val userService: UserService,
 ) {
     @PostMapping
+    @Operation(summary = "Создание пользователя")
     fun create(
         @RequestBody userRequest: UserRequest,
     ): UserResponse =
@@ -30,25 +38,30 @@ class UserController(
             .createUser(
                 user = userRequest.toModel(),
             )?.toResponse()
-            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create a user.")
+            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не создан")
 
     @GetMapping
+    @Operation(summary = "Получение всех пользователей")
     fun findAll(): List<UserResponse> =
         userService
             .findAll()
             .map { it.toResponse() }
 
     @GetMapping("/{uuid}")
+    @Operation(summary = "Получение пользователя по UUID")
     fun findByUUID(
+        @Parameter(description = "UUID пользователя")
         @PathVariable uuid: UUID,
     ): UserResponse =
         userService
             .findById(uuid)
             ?.toResponse()
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find a user.")
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден")
 
     @DeleteMapping("/{uuid}")
+    @Operation(summary = "Удаление пользователя по UUID")
     fun deleteByUUID(
+        @Parameter(description = "UUID пользователя")
         @PathVariable uuid: UUID,
     ): ResponseEntity<Boolean> {
         val success = userService.deleteByUUID(uuid)
@@ -58,7 +71,7 @@ class UserController(
                 .noContent()
                 .build()
         } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find a user.")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден")
         }
     }
 
