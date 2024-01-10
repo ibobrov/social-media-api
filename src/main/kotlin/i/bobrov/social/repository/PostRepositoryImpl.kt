@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 class PostRepositoryImpl(
@@ -83,7 +84,7 @@ class PostRepositoryImpl(
                     text = rs.getString("text"),
                     imageUrl = rs.getString("image_url"),
                     createTime = rs.getCalendar("create_time"),
-                    userId = rs.getLong("author_user_id"),
+                    userId = UUID.fromString(rs.getString("author_user_id")),
                 )
             }
     }

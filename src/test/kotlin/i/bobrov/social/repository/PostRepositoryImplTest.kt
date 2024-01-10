@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.util.Calendar
+import java.util.UUID
 
 @RunWithTestContext
 class PostRepositoryImplTest {
@@ -16,6 +17,10 @@ class PostRepositoryImplTest {
 
     @Autowired
     private lateinit var jdbcTemplate: NamedParameterJdbcTemplate
+
+    private val userUuid = UUID.fromString("67e02c64-660a-4dd8-b056-b19a946cc535")
+
+    private val instCalendar = Calendar.getInstance()
 
     @AfterEach
     fun reset() {
@@ -27,15 +32,15 @@ class PostRepositoryImplTest {
 
     @Test
     fun whenTestFindById() {
-        val post = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
+        val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
         assertThat(postRepo.findById(post.id)).isEqualTo(post)
     }
 
     @Test
     fun whenTestFindAll() {
-        val post1 = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
-        val post2 = Post(0, "Bug2", "text", "url", Calendar.getInstance(), 1)
+        val post1 = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
+        val post2 = Post(0, "Bug2", "text", "url", instCalendar, userUuid)
         postRepo.add(post1)
         postRepo.add(post2)
         assertThat(postRepo.findAll(0)).isEqualTo(listOf(post1, post2))
@@ -43,10 +48,10 @@ class PostRepositoryImplTest {
 
     @Test
     fun whenReplaceItemIsSuccessful() {
-        val post = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
+        val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
 
-        val updated = Post(0, "new post", "text", "url", Calendar.getInstance(), 1)
+        val updated = Post(0, "new post", "text", "url", instCalendar, userUuid)
         assertThat(postRepo.update(post.id, updated)).isTrue()
 
         val actual = postRepo.findById(post.id)!!
@@ -59,16 +64,16 @@ class PostRepositoryImplTest {
 
     @Test
     fun whenReplaceItemIsNotSuccessful() {
-        val post = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
+        val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
-        val updated = Post(0, "Bug2", "text2", "url2", Calendar.getInstance(), 1)
+        val updated = Post(0, "Bug2", "text2", "url2", instCalendar, userUuid)
         assertThat(postRepo.update(-1, updated)).isFalse()
         assertThat(postRepo.findById(post.id)).isEqualTo(post)
     }
 
     @Test
     fun whenDeleteItemIsSuccessful() {
-        val post = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
+        val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
         postRepo.delete(post.id)
         assertThat(postRepo.findById(post.id)).isNull()
@@ -76,7 +81,7 @@ class PostRepositoryImplTest {
 
     @Test
     fun whenDeleteItemIsNotSuccessful() {
-        val post = Post(0, "Bug1", "text", "url", Calendar.getInstance(), 1)
+        val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
         assertThat(postRepo.delete(-1)).isFalse()
         assertThat(postRepo.findById(post.id)).isEqualTo(post)

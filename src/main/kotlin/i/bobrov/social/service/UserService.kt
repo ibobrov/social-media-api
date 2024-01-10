@@ -13,7 +13,7 @@ class UserService(
         val found = userRepo.findByEmail(user.email)
 
         return if (found == null) {
-            userRepo.save(user)
+            userRepo.add(user)
             user
         } else {
             null
@@ -27,5 +27,5 @@ class UserService(
         userRepo.findAll()
 
     fun deleteByUUID(uuid: UUID): Boolean =
-        userRepo.deleteByUUID(uuid)
+        userRepo.delete(uuid)
 }

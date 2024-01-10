@@ -79,6 +79,7 @@ class UserController(
         User(
             id = UUID.randomUUID(),
             email = this.email,
+            name = "",
             password = this.password,
             role = Role.USER,
         )

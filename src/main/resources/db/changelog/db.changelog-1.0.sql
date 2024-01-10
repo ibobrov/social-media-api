@@ -1,8 +1,11 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY NOT NULL,
+  id UUID PRIMARY KEY NOT NULL,
   name VARCHAR NOT NULL,
   email VARCHAR NOT NULL UNIQUE,
-  password VARCHAR NOT NULL
+  password VARCHAR NOT NULL,
+  role VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -11,32 +14,32 @@ CREATE TABLE IF NOT EXISTS posts (
   text VARCHAR NOT NULL,
   image_url VARCHAR,
   create_time TIMESTAMP NOT NULL DEFAULT now(),
-  author_user_id INT NOT NULL REFERENCES users(id)
+  author_user_id UUID NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS subscribers (
   id SERIAL PRIMARY KEY NOT NULL,
-  first_id INT NOT NULL REFERENCES users(id),
-  second_id INT NOT NULL REFERENCES users(id)
+  first_id UUID NOT NULL REFERENCES users(id),
+  second_id UUID NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS friends (
   id SERIAL PRIMARY KEY NOT NULL,
-  first_id INT NOT NULL REFERENCES users(id),
-  second_id INT NOT NULL REFERENCES users(id)
+  first_id UUID NOT NULL REFERENCES users(id),
+  second_id UUID NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS chat_messages (
   id SERIAL PRIMARY KEY NOT NULL,
   text TEXT NOT NULL,
   send_time TIMESTAMP NOT NULL,
-  first_id INT NOT NULL REFERENCES users(id),
-  second_id INT NOT NULL REFERENCES users(id)
+  first_id UUID NOT NULL REFERENCES users(id),
+  second_id UUID NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS activity (
   id SERIAL PRIMARY KEY NOT NULL,
-  user_id INT NOT NULL REFERENCES users(id),
+  user_id UUID NOT NULL REFERENCES users(id),
   post_id INT NOT NULL REFERENCES posts(id),
   create_time TIMESTAMP
 );

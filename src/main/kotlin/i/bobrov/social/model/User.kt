@@ -3,7 +3,8 @@ package i.bobrov.social.model
 import java.util.UUID
 
 data class User(
-    val id: UUID,
+    var id: UUID,
+    val name: String,
     val email: String,
     val password: String,
     val role: Role,

@@ -1,6 +1,7 @@
 package i.bobrov.social.model
 
 import java.util.Calendar
+import java.util.UUID
 
 data class Post(
     var id: Int,
@@ -8,5 +9,5 @@ data class Post(
     val text: String,
     val imageUrl: String,
     val createTime: Calendar,
-    val userId: Long,
+    val userId: UUID,
 )
