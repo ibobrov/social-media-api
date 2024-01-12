@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,26 +30,31 @@ import java.util.UUID
 class UserController(
     private val userService: UserService,
 ) {
+    private val nullUUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+
     @PostMapping
-    @Operation(summary = "Создание пользователя")
+    @Operation(summary = "Создание пользователя (не требуется аунтификация)")
     fun create(
         @RequestBody userRequest: UserRequest,
-    ): UserResponse =
+    ) = ResponseEntity<UserResponse>(
         userService
             .createUser(
                 user = userRequest.toModel(),
-            )?.toResponse()
-            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не создан")
+            ).toResponse(),
+        HttpStatus.CREATED,
+    )
 
     @GetMapping
-    @Operation(summary = "Получение всех пользователей")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Получение всех пользователей (администратор)")
     fun findAll(): List<UserResponse> =
         userService
             .findAll()
             .map { it.toResponse() }
 
     @GetMapping("/{uuid}")
-    @Operation(summary = "Получение пользователя по UUID")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Получение пользователя по UUID (администратор)")
     fun findByUUID(
         @Parameter(description = "UUID пользователя")
         @PathVariable uuid: UUID,
@@ -59,7 +65,8 @@ class UserController(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден")
 
     @DeleteMapping("/{uuid}")
-    @Operation(summary = "Удаление пользователя по UUID")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Удаление пользователя по UUID (администратор)")
     fun deleteByUUID(
         @Parameter(description = "UUID пользователя")
         @PathVariable uuid: UUID,
@@ -77,9 +84,9 @@ class UserController(
 
     private fun UserRequest.toModel(): User =
         User(
-            id = UUID.randomUUID(),
+            id = nullUUID,
             email = this.email,
-            name = "",
+            name = this.name,
             password = this.password,
             role = Role.USER,
         )

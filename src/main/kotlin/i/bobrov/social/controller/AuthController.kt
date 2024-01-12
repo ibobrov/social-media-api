@@ -24,14 +24,14 @@ class AuthController(
     private val authenticationService: AuthenticationService,
 ) {
     @PostMapping
-    @Operation(summary = "Получить токены")
+    @Operation(summary = "Получить токены (не требуется аунтификация)")
     fun authenticate(
         @RequestBody authRequest: AuthenticationRequest,
     ): AuthenticationResponse =
         authenticationService.authentication(authRequest)
 
     @PostMapping("/refresh")
-    @Operation(summary = "Обновить токены")
+    @Operation(summary = "Обновить токены (не требуется аунтификация)")
     fun refreshAccessToken(
         @RequestBody request: RefreshTokenRequest,
     ): TokenResponse =

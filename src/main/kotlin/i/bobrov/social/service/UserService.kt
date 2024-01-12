@@ -9,15 +9,9 @@ import java.util.UUID
 class UserService(
     private val userRepo: UserRepository,
 ) {
-    fun createUser(user: User): User? {
-        val found = userRepo.findByEmail(user.email)
-
-        return if (found == null) {
-            userRepo.add(user)
-            user
-        } else {
-            null
-        }
+    fun createUser(user: User): User {
+        userRepo.add(user)
+        return user
     }
 
     fun findById(uuid: UUID): User? =

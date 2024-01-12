@@ -4,7 +4,7 @@ import i.bobrov.social.model.User
 import java.util.UUID
 
 interface UserRepository {
-    fun add(user: User): Boolean
+    fun add(user: User): User
 
     fun findByUUID(uuid: UUID): User?
 

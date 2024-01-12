@@ -1,7 +1,9 @@
 package i.bobrov.social.repository
 
+import i.bobrov.social.exception.ObjectNotCreatedException
 import i.bobrov.social.model.Role
 import i.bobrov.social.model.User
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -15,25 +17,31 @@ class UserRepositoryImpl(
     private val jdbcTemplate: NamedParameterJdbcTemplate,
     private val encoder: PasswordEncoder,
 ) : UserRepository {
-    override fun add(user: User): Boolean {
-        val keyHolder = GeneratedKeyHolder()
-        jdbcTemplate.update(
-            "insert into users (id, name, email, password, role)" +
-                "values (uuid_generate_v4(), :name, :email, :password, :role)",
-            MapSqlParameterSource(
-                mapOf(
-                    "name" to user.name,
-                    "email" to user.email,
-                    "password" to encoder.encode(user.password),
-                    "role" to user.role,
+    private val log = LoggerFactory.getLogger(UserRepository::class.java)
+
+    override fun add(user: User): User {
+        try {
+            val keyHolder = GeneratedKeyHolder()
+            jdbcTemplate.update(
+                "insert into users (id, name, email, password, role)" +
+                    "values (uuid_generate_v4(), :name, :email, :password, :role)",
+                MapSqlParameterSource(
+                    mapOf(
+                        "name" to user.name,
+                        "email" to user.email,
+                        "password" to encoder.encode(user.password),
+                        "role" to user.role.name,
+                    ),
                 ),
-            ),
-            keyHolder,
-            listOf("id").toTypedArray(),
-        )
-        val id = keyHolder.keys?.getValue("id") as String
-        user.id = UUID.fromString(id)
-        return true
+                keyHolder,
+                listOf("id").toTypedArray(),
+            )
+            user.id = keyHolder.keys?.getValue("id") as UUID
+            return user
+        } catch (exc: Exception) {
+            log.error(exc.message, exc)
+            throw ObjectNotCreatedException(user)
+        }
     }
 
     override fun findByUUID(uuid: UUID): User? =

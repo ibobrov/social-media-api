@@ -15,3 +15,11 @@ class ObjectNotFoundException(
         message = "Object with id = $id not found",
         status = HttpStatus.NOT_FOUND,
     )
+
+class ObjectNotCreatedException(
+    obj: Any,
+) : BaseException(
+        errorCode = "object.not.created",
+        message = "Object = $obj not created",
+        status = HttpStatus.BAD_REQUEST,
+    )
