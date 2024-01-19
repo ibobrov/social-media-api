@@ -17,9 +17,9 @@ class ObjectNotFoundException(
     )
 
 class ObjectNotCreatedException(
-    obj: Any,
+    message: String,
 ) : BaseException(
         errorCode = "object.not.created",
-        message = "Object = $obj not created",
+        message = message,
         status = HttpStatus.BAD_REQUEST,
     )

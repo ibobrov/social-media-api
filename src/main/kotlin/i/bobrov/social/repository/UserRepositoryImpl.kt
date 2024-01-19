@@ -4,6 +4,7 @@ import i.bobrov.social.exception.ObjectNotCreatedException
 import i.bobrov.social.model.Role
 import i.bobrov.social.model.User
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -38,9 +39,11 @@ class UserRepositoryImpl(
             )
             user.id = keyHolder.keys?.getValue("id") as UUID
             return user
+        } catch (exc: DuplicateKeyException) {
+            throw ObjectNotCreatedException("Object = $user not created. ${exc.cause}")
         } catch (exc: Exception) {
             log.error(exc.message, exc)
-            throw ObjectNotCreatedException(user)
+            throw ObjectNotCreatedException("Object = $user not created.")
         }
     }
 
