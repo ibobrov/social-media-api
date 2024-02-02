@@ -23,6 +23,7 @@ class UserRepositoryImpl(
     override fun add(user: User): User {
         try {
             val keyHolder = GeneratedKeyHolder()
+            val encodedPassword = encoder.encode(user.password)
             jdbcTemplate.update(
                 "insert into users (id, name, email, password, role)" +
                     "values (uuid_generate_v4(), :name, :email, :password, :role)",
@@ -30,7 +31,7 @@ class UserRepositoryImpl(
                     mapOf(
                         "name" to user.name,
                         "email" to user.email,
-                        "password" to encoder.encode(user.password),
+                        "password" to encodedPassword,
                         "role" to user.role.name,
                     ),
                 ),
@@ -38,6 +39,7 @@ class UserRepositoryImpl(
                 listOf("id").toTypedArray(),
             )
             user.id = keyHolder.keys?.getValue("id") as UUID
+            user.password = encodedPassword
             return user
         } catch (exc: DuplicateKeyException) {
             throw ObjectNotCreatedException("Object = $user not created. ${exc.cause}")

@@ -31,14 +31,15 @@ class PostRepositoryImplTest {
     }
 
     @Test
-    fun whenTestFindById() {
+    fun whenFindByIdThenReturnPost() {
         val post = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         postRepo.add(post)
         assertThat(postRepo.findById(post.id)).isEqualTo(post)
+        assertThat(postRepo.findById(101)).isNull()
     }
 
     @Test
-    fun whenTestFindAll() {
+    fun whenFindAllThenReturnList() {
         val post1 = Post(0, "Bug1", "text", "url", instCalendar, userUuid)
         val post2 = Post(0, "Bug2", "text", "url", instCalendar, userUuid)
         postRepo.add(post1)

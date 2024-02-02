@@ -6,7 +6,7 @@ data class User(
     var id: UUID,
     val name: String,
     val email: String,
-    val password: String,
+    var password: String,
     val role: Role,
 )
 
